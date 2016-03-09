@@ -6,7 +6,6 @@ import scala.concurrent.ExecutionContext
 
 trait ApiModule { this: DomainModule =>
   implicit def executionContext: ExecutionContext
-  println("1: "+cookRepository)
-  def foodPrepApi: FoodPrepApi = new FoodPrepApi(cookRepository)
+  val foodPrepApi: FoodPrepApi = new FoodPrepApi(cookRepository)
 }
 

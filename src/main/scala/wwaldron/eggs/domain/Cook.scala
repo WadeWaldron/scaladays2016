@@ -4,18 +4,21 @@ import wwaldron.eggs.domain.Egg.CookedEgg
 
 import scala.concurrent.{ExecutionContext, Future}
 
+case class CookId(value: Integer) extends AnyVal
+
 object Cook {
   case object OutOfEggsException extends IllegalStateException("There are no more eggs")
 }
 
-class Cook(eggRepository: EggRepository)(implicit ec: ExecutionContext) {
+class Cook(id: CookId)(eggRepository: EggRepository)(implicit ec: ExecutionContext) {
   import Cook._
   private val fryingPan = new EmptyFryingPan()
-//
+
   private def wait(pan: FullFryingPan) = {
     Stream
       .continually(pan.checkDoneness())
       .takeWhile(_ == false)
+      .last
   }
 
   def prepareEgg(style: EggStyle): Future[CookedEgg] = {
@@ -27,17 +30,4 @@ class Cook(eggRepository: EggRepository)(implicit ec: ExecutionContext) {
       fullFryingPan.remove()._2
     }
   }
-//  {
-//    val x = eggRepository.findAndRemove().map { eggOption =>
-//      eggOption.map { egg =>
-//        fryingPan.add(egg, style).flatMap { fullPan =>
-//          wait(fullPan)
-//          fullPan.remove() match {
-//            case
-//          }
-//        }.get
-//      }
-//    }
-//    x
-//  }
 }

@@ -14,7 +14,7 @@ class FoodPrepApiTest
     "should return a CookedEgg with the specified style" in new TestModule {
       eggRepository.add(createRawEgg())
 
-      val expectedEgg = createRawEgg().startCooking(EggStyle.SunnySideUp).finishCooking()
+      val expectedEgg = createCookedEgg(EggStyle.SunnySideUp)
 
       whenReady(foodPrepApi.prepareEgg(EggStyle.SunnySideUp)) { egg =>
         assert(egg == expectedEgg)
