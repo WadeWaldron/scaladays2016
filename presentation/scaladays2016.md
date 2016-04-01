@@ -3,14 +3,15 @@
 
 ^ My name is Wade Waldron.  I am a Senior Software Developer with BoldRadius
 
-^ I started using Domain Driven Design and Onion Architecture a few years back while working on real estate software. It was a long journey to get where I am today, and it's far from over.  I am still learning about DDD.
- 
-^ One thing I found was that there is a lot of concepts that get rolled in with Domain Driven Design that are actually unrelated.  If you research you will find it tied up with Event Sourcing and CQRS, but in fact Domain Driven Design can be accomplished without those things.  
+^ Started using DDD and Onion Architecture while working on real estate software.
 
-^ Today we will be focusing on the core of Domain Driven Design, and we will be adding Onion Architecture as a 
-complement to that.
+^ The combination of these tools brought clarity to my code.
 
-^ Onion Architecture is not a requirement for doing DDD, but I have found it complements it very well.
+^ DDD is not CQRS or Event Sourcing.
+
+^ Focus on Core DDD but also Onion Architecture
+
+^ Onion Architecture not required.
 
 ### - Wade Waldron (@wdwaldron) -
 ### - Senior Software Developer with BoldRadius -
@@ -19,13 +20,17 @@ complement to that.
 
 ## Case Study
 
-^ Throughout this presentation we will be referring to a specific case study.  We will use the example of "how to fry an egg".
+^ Case Study: How to Fry an Egg
 
-^ More specifically, the domain we are exploring will start from the point of requesting an egg, cooked to a specific style, and it will end when that egg is completed and received by the requester.
+^ Specifically, what happens when someone requests that an egg be cooked.  What is the process.
 
-^ I like this example because it seems simple on the surface, but when you delve deeper you find there are nuances and edge cases that provide a fair amount of depth. It's also a concept that everyone can relate to. I can start talking about this domain without having to spend a lot of time trying to explain the rules.
+^ Lots of good nuances and edge cases.
 
-^ Another thing I like about this domain is that it is a very non-traditional software domain. Everyone uses the "customer" domain. But the problem with more traditional domains is that they have been done so many times, it can be difficult to separate out what is the actual domain, and what is simply the way it's always been done.
+^ Relateable
+
+^ Easy to understand
+
+^ Not "over done"
 
 ![right fit](img/fried_egg.jpg)
 
@@ -33,17 +38,25 @@ complement to that.
 
 ---
 
-^ Okay, we have been throwing around a lot of words, but if you are like me, then you may actually be asking "but what is a domain?"
+^ "What is a Domain?"
 
-^ A domain represents a sphere of knowledge.  That knowledge could be anything.  It could be the business rules around selling products online.  It could be the physical laws that govern geological processes. It could be the actions and events that occur while trying to cook an egg.
+^ A sphere of knowledge. eg. Selling products, geological process, cooking an egg.
  
-^ Domain Driven Design is a technique for developing software that puts the primary focus on the core domain.  When building software using Domain Driven Design, we don't want to focus on things like the database, or the REST api, or even the user interface.  These things are important, and we do need to worry about them, but they also change.  User interfaces evolve over time.  REST Api's go through different versions.  Databases can come and go.
+^ DDD focuses on the core domain.
 
-^ Domain Driven Design is about capturing the truth of the world in the Domain Model. While many aspects of our  infrastructure may change, our business rules, our domain rules, often remain fairly constant. We start by designing a Domain Model that captures as many of those rules as we can as accurately as we can.  Then we write our software to reflect that domain model. Let's be clear here.  The software is not the model. It is an implementation of the model. We could create other implementations of the model using diagrams or documentation.  Each of these is just another implementation of that domain model. The model is simply our understanding of the real world.
+^ De-emphasize technologies, user interfaces, etc.
 
-^ In order to achieve this, Domain Driven Design encourages frequent communication between Domain Experts, and Technical experts. Domain experts are people involved in the process who know a lot about the rules of the domain, but are not necessarily technical. They could be end users, marketing, lawyers, upper management, janitors, or anyone else who can provide insight into how the domain works.
+^ Core Domain is often more constant.
 
-^ In order for domain experts to communicate effectively with the technical experts, they need to be able to speak a common language.
+^ Capturing truth of the real world in the domain model.
+
+^ Software is not the model.  It is an implementation
+  
+^ Other implementations include documentation or diagrams.
+
+^ DDD encourages communication between domain and technical experts.
+
+^ Experts communicate using a common language.
 
 ## What is Domain Driven Design?
 
@@ -54,13 +67,15 @@ complement to that.
 
 ## Ubiquitous Language
 
-^ DDD introduces the concept of the Ubiquitous Language.  Ubiquitous Language is a set of terms and concepts that are central to the domain being modelled. These are concepts that are well understood by the domain experts.
+^ Common language is the Ubiquitous Language.
 
-^ When building software using DDD, our code should reflect the ubiquitous language. We should try to use the same names in our code that are being used by the domain experts.
+^ Set of concepts in the domain understood by experts.
 
-^ A key goal in DDD is creating a model that we can talk about with our Domain Experts. We want those experts to be able to understand us when we talk about the model because if they understand the model then they can potentially point out places where the model doesn't correctly reflect the domain.
+^ Code should reflect the domain model.
 
-^ This means that when we build software using Domain Driven Design we want to avoid vague terms like "entity", or "process", or "action", unless they are part of the domain. Sometimes it is necessary to create higher level abstractions and this may necessitate introducing words or concepts that are not part of the standard domain, but there needs to be an agreement between the domain experts and the technical experts about what those abstractions represent. These can then become part of the ubiquitous language that is used by both groups.
+^ We want to be able to talk to Domain experts about the model.
+
+^ Avoid vague terms like "entity" or "process" or "action".
 
 - A common language that can be used by domain experts and technical experts
 - Reflected in the software model
@@ -69,9 +84,11 @@ complement to that.
 
 ## Case Study: Language
 
-^ Going back to our case study.  Here are a few pieces of the domain language that will be easily recognizable by our domain experts.  If you sat down with someone to talk about how to cook eggs, you could safely use any of these words without worrying about losing them in the language.
+^ Here are terms from the domain.
 
-^ Some or all of these terms will in turn be reflected in our software model.
+^ A domain expert (chef, cook) can understand
+
+^ Some terms may not end up in our code.
 
 ![left fit](img/chef.jpg)
 
@@ -83,11 +100,15 @@ complement to that.
 
 ## Bounded Contexts
 
-^ One problem that often arises when we are building software is that the domain model is excessively complex. Trying to capture that model becomes because your domain objects need to encapsulate so much logic, and so many rules, that they start to look like spaghetti.  And as much as I love to eat spaghetti, I don't want it in my code.
+^ Capturing a complex domain requires too much logic, results in spaghetti.
 
-^ DDD solves this by using Bounded Contexts. A bounded context is a specific subset of the domain.  Within that subset of the domain, certain ideas from the model may be present while other ideas may not.  In fact, the meaning of words in the ubiquitous language can change from one bounded context to the next.
+^ Bounded Contexts to solve.
 
-^ Bounded Contexts fit very well with Microservice Architectures.  Understanding how a Domain breaks up into multiple contexts can be a critical part of building effective microservice architectures.
+^ Subset of the domain.
+
+^ Outside the Bounded Context words/rules may have different meanings.
+
+^ Bounded Contexts + Microservices
 
 - The setting or context where ideas from the ubiquitous language apply
 - Outside of the bounded context, the words meaning may change, or it may not apply
@@ -97,17 +118,13 @@ complement to that.
 
 ## Case Study: Bounded Contexts
 
-^ So let's look at bounded contexts in our case study. We have isolated our case study to just one single bounded context, specifically, food preparation.  But there are other bounded contexts that are part of the larger domain
+^ What are the bounded contexts in our case study?
 
-^ If we are going to cook eggs, then we need to first get those eggs.  That means that there might be a separate context related to grocery shopping.  When we run out of eggs we need to add eggs to a grocery list so that we can get more next time we are shopping.
+^ Frying pan has no meaning while grocery shopping.
 
-^ Once we have cooked our eggs, we need to clean up after ourselves.  We need to wash the frying pan so that it is ready for the next time we want to cook. So we may have a "washing dishes" context as well.
+^ Egg has different meaning in washing dishes.
 
-^ You will note, that in the grocery shopping context, a frying pan has little meaning. You don't use or need a frying pan in order to buy eggs. A cook also has no meaning in this context.
-
-^ In the dishwashing context an egg does not mean the same thing as in the food preparation context. Eggs are still present in this context, but now they are the disgusting thing you are trying to scrape off the pan, rather than the tasty delight that will be served with your toast.
-
-^ If we were to try to marry all of these concepts into a single model, we would end up with a disgusting thing we want to scrape out of our code.  This is what makes bounded contexts so critical. They allow us to encapsulate pieces of our domain into specific contexts where they have meaning.
+^ Trying to create one domain for all of this would be too big.
 
 ![left fit](img/professional_kitchen.jpg)
 
@@ -118,21 +135,23 @@ complement to that.
 ---
 
 ## Domain Building Blocks
-
-^ There are various pieces we use when building domains using domain driven design. We won't go into a lot of detail on these.  You can find more detail about them on wikipedia or other places. 
-
-- Value Objects: A domain object that is defined by it's attributes
-- Entity: A domain object that is defined by an identity
+ 
+^ Building Blocks for DDD
+ 
+^ Find more info on Wikipedia or the DDD book by Eric Evans
+ 
+- Value Objects: A domain object defined by it's attributes
+- Entity: A domain object defined by an identity
 - Aggregate: A collection of objects bound by a root entity
-- Service: A container for operations that don't conceptually fit other domain objects
-- Repository: An abstraction layer for retrieving existing instances of domain objects
-- Factory: An abstraction layer for creating new instances of domain objects
+- Service: Contains operations that don't fit other domain objects
+- Repository: Abstraction for retrieving instances of domain objects
+- Factory: Abstraction for creating instances of domain objects
 
 ---
 
 ## Case Study: Domain Objects
 
-^ Here are some examples of domain objects in our case study.  You will note that these names are pulled right from the ubiquitous language we talked about earlier.
+^ Examples of domain objects, pulled from ubiquitous language.
 
 ![left fit](img/eggs.jpg)
 
@@ -144,25 +163,29 @@ complement to that.
 
 ## What is Onion Architecture
 
-^ So, hopefully we now have a decent idea of what domain driven design is.  Don't worry, we will explore it in more detail.
+^ We know what DDD is, what is Onion Architecture?
 
-^ But what about Onion Architecture?  What is that?
+^ Applications separated into layers, like an onion.
 
-^ Onion Architecture separates your application into multiple layers that are built around the domain.  The domain is central to the software.
+^ Domain near the center of the onion
 
-^ Outer layers of the onion depend on, and are coupled to the inner layers.
+^ Other layers build around Domain
 
-^ Inner layers on the other hand are decoupled from the outer layers
+^ Outer layers depend on/coupled to inner layers
 
-^ Inner layers defined interfaces that may be implemented in the outer layers.
+^ Inner layers have no knowledge of outer layers
 
-^ Core: Basic building blocks. Collections, Akka, Scalaz etc.
+^ Inner layers define interfaces
 
-^ Domain: Key domain/business logic. Entities, Aggregates, Repositories, Services etc.
+^ Outer layers implement interfaces
 
-^ API: Defines the "public" interface to the Domain. I was originally told this was the "services" layer.  However, I don't like the term services, because it's overloaded, especially when it comes to domain driven design.  I prefer the term API because I think it better reflects what this layer is trying to achieve.
+^ Core: Basic Building Blocks
 
-^ Infrastructure: External Dependencies, User Interfaces, Database etc.
+^ Domain: Key business logic
+
+^ API/Services: Public Interface to the Domain
+
+^ Infrastructure: External dependencies, User Interfaces, Databases
 
 ![right fit](img/onion_architecture.png)
 
@@ -175,17 +198,23 @@ complement to that.
 
 # API
 
-^ Let's focus in more detail on the individual layers of the Onion.  I am going to start with the API.  This might seem a little backwards, since we are focusing so heavily on the domain we might expect to start there.  I like to start with the API though because it helps me to define what kinds of questions I will need to ask my domain.  This is where I am defining the inputs and outputs to the domain.  I am defining the operations that we will perform.
+^ Lets look at the API
+
+^ Good starting point
+
+^ Defines what kind of questions we want to ask the domain
+
+^ Inputs/Outputs
 
 ---
 
 ## Decoupling the Domain
 
-^ The API acts as a layer of insulation between the Domain and the Infrastructure.  This is important because it helps us to keep them from bleeding into each other.  It's also important because it provides a single consistent interface to the domain.  How we interact with that interface will be determined in the infrastructure, but what the operations are will be determined by the API.
+^ API Insulates Domain from Infrastructure.  Keeps it from bleeding, keeps it consistent.
 
-^ This insulation layer means that we can restructure or rewrite the domain as our understanding of it evolves.  As long as we keep the API layer the same, the infrastructure doesn't necessarily need to change.  We just need to adapt the API to the new reality of the domain.
+^ Restructure domain as it evolves without affecting infrastructure.  API stays the same.
 
-^ This is also a fantastic place to start testing. When I am writing code using Domain Driven Design, my first step is usually to define that API interface.  My second step is then to write a high level functional test around that API. This high level test is basically just a simple end to end happy path test.  I don't go into details around all the edge cases.  I will leave that for the unit tests.
+^ Good place for high level tests.
 
 ![fit left](img/broken_chain.jpg)
 
@@ -198,17 +227,17 @@ complement to that.
 
 ## Case Study: The First Crack
 
-^ Okay, let's take a crack at some code.  What might an API for our case study look like?
+^ First crack at some code.
 
-^ Here we have a very simple API.  You can see a single method "fry" which takes an egg and returns a fried egg. That's pretty simple.  But is it correct?
+^ Look at the code
 
-^ I can see some issues right out of the gate with this api. 
- 
-^ How is this egg going to be cooked?  Will it be scrambled? Will it be sunny side up?
+^ Issues
 
-^ Also we are requesting that someone cook an egg for us, presumably a cook. In the real world, when do you ever hand someone an egg and ask them to cook it? Generally, you ask them for an egg, cooked a certain way, and you leave it up to them to go get the egg.
-  
-^ Another issue is time.  This model doesn't capture time.  When we ask for an egg it is going to take time to be cooked. We don't want to stand around waiting for that egg to be cooked. We want to be able to read the news, or check facebook or whatever the kids are doing these days.  So we need an API that reflects the time that will be taken and allows us to continue with our business.
+^ Scrambled? Sunny Side Up? Poached?
+
+^ Would you ever hand an egg and say cook this?
+
+^ Time?  Doesn't capture the time to cook the egg.
 
 ```scala
 trait FoodPrepApi {
@@ -219,17 +248,19 @@ trait FoodPrepApi {
 
 ## Case Study: Second Crack
 
-^ Here is a new version of the API.
+^ Address our previous issues.
 
-^ This version addresses our previous issues.  We provide an EggStyle to the API.  This means we can now specify how we want our eggs done.
+^ Egg Style
 
-^ We are no longer handing an egg to the API.  Instead we are just requesting the style and relying on the API to take care of getting the Egg.  This better reflects what happens in the real world.
+^ No longer handing the Egg
 
-^ We are returning a future. This captures the element of time in the API. It also captures the possibility of failure which is another interesting aspect of the domain. What kind of failures might we encounter?
+^ Returning a Future, encapsulates time and failure
 
-^ There are recoverable failures, like what if the egg was dropped.  In that case though, I would hope that the cook would simply fix the problem and my egg would be delayed rather than abandoned entirely.
+^ What types of failures?
 
-^ But there are also unrecoverable failures. If the cook goes to cook the egg and discovers someone forgot to do the grocery shopping, then they might have to fail the operation entirely.
+^ Recoverable: Egg was dropped (should be fixed without returning a failure)
+
+^ Unrecoverable: Out of eggs (have to return a failure.  Can not complete.)
 
 ```scala
 trait FoodPrepApi {
@@ -241,13 +272,15 @@ trait FoodPrepApi {
 
 ## Consistent Api
 
-^ By creating a consistent Api that hides our domain we create a preferred way to interact with that domain.
+^ Consistent API hides domain
 
-^ Initially we may build our application as a GUI that talks directly to the code.  In this case our GUI will communicate with the domain through the API
+^ Defines preferred way to interact with domain
 
-^ Later, when we decide we want to introduce a REST Api for our application, we can do so simply by having it talk to the same API.
+^ May start with a GUI
 
-^ If we decide we want an event driven architecture backed by a message bus it's the same thing.  All of these interfaces simply talk to the same API and make the same calls.  This makes it trivial to add new types of interfaces on top of the existing functionality.
+^ Later add REST.  Still talks to same API.
+
+^ Later make it message driven.  Still uses same API.
 
 ![inline](img/api_separation.png)
 
@@ -255,9 +288,13 @@ trait FoodPrepApi {
 
 ## Case Study: Functional Testing
 
-^ Now that we have an Api that we are happy with, the next step that I usually take is to write a functional test around that Api.  Here is what such a test might look like:
+^ Functional Tests around API
 
-^ It's a relatively simple test.  It's just verifying that the Egg we get back from the Api is the egg that we expect. The key here though is that nothing in this test is mocked or stubbed. The repositories are real, the domain classes are real. This verifies that when we wire all the pieces together, or application works as expected.
+^ Simple test.  Nothing mocked or stubbed.  
+
+^ Real Repos, real Domain Classes.
+
+^ Verifies that everything works when wired together.
 
 ```scala
 class FoodPrepApiTest extends FreeSpec with ScalaFutures {
@@ -278,19 +315,21 @@ class FoodPrepApiTest extends FreeSpec with ScalaFutures {
 
 # Domain
 
-^ We have built our API.  Doing this required that we flesh out a very minimal amount of our domain. Now that we have this high level test, we can use it to drive out the implementation of our domain.  As we explore the domain, we may find that our Api evolves slightly, or that our test does, but that's okay.  Domain Driven Design isn't about getting everything right the first time.
+^ API required a minimal amount of Domain to be created.
 
-^ Let's start by exploring an aspect of our Domain that we have already defined for this test.
+^ Use High Level test to drive out domain.
+
+^ API or test may evolve as we further explore domain.
 
 ---
 
 ## Case Study: How would you like your eggs?
 
-^ For our Domain we created a trait called EggStyle.  EggStyle has a number of implementations.  You can see a few of them in the slide.
+^ Created Egg Style.  See Slide.
 
-^ We also created another trait called Egg as well as a couple of implementations of that trait.
+^ Created Egg.  See Slide.
 
-^ These are implemented as Algebraic Data Types.
+^ Both implemented as Algebraic Data Types
 
 ```scala
 sealed trait EggStyle
@@ -310,7 +349,11 @@ case class CookedEgg(style: EggStyle) extends Egg
 
 ## Algebraic Data Types
 
-^ Algebraic Data Types are great for building domains. They allow us to capture a lot of information about the nature of the domain, just in the types. If we can capture domain rules in this way it has huge benefits because it means we can leverage the compiler to test our domain rules, rather than having to write our own tests.
+^ Algebraic Data Types good for building domains.
+
+^ Capture domain logic in the Type system.
+
+^ Compiler can test domain rules, rather than writing tests.
 
 - Useful for building rich domains
 - Provide added type safety
@@ -320,11 +363,19 @@ case class CookedEgg(style: EggStyle) extends Egg
 
 ## Tiny Types
 
-^ A concept related to Algebraic Data Types is the concept of Tiny Types or Wrapper Types. These are very small, lightweight wrapper classes that we create around primitive data types. Like with Algebraic Data Types, a tiny type allows us to create compile time checking of our model.
+^ Related to ADTs is Tiny Types or Wrapper Types
 
-^ Rather than using a bare string or integer we create a wrapper around it. By doing this, we can ensure that we don't accidentally pass the wrong integer in as a parameter to a function. We have type checking that ensures that our types are correct.
+^ Lightweight wrapper classes around primitive data types.
 
-^ Tiny Types also provide us a location to hang any validation logic. We could for example validate that a string follows a particular pattern (like an email address).
+^ Compile time checking of the model.
+
+^ No bare strings or integers.
+
+^ Ensures we don't accidentally pass the wrong string or integer to a function.
+
+^ Provides a location to hang validation logic (eg. Email Address)
+
+^ Enriches Domain
 
 - Compile time checking of primitives
 - Encapsulates data validation
@@ -334,9 +385,15 @@ case class CookedEgg(style: EggStyle) extends Egg
 
 ## Case Study: Identifying our Cook
 
-^ Here we see an example of a Tiny Type.  The CookId could simply be passed around as an Integer, but this can be dangerous.  Using bare integers for Ids leads us to potential problems.  We could accidentally write code that puts the wrong integer in the wrong place.  We could for example accidentally pass an Egg Id if we had such a thing, or even something silly like a quantity where we wanted an Id.
+^ Example of a Tiny Type.
 
-^ The wrapper type prevents us from making those mistakes.  It also enriches our domain and provides us with a location to attach any domain rules about those types.
+^ Could be integer but this would be dangerous.
+
+^ Accidentally mix up Ids or mix other types where we wanted Ids.
+
+^ Prevents mistakes
+
+^ Enables us to later enrich the class and our domain.
 
 ```scala
   case class CookId(value: Integer) extends AnyVal
@@ -345,11 +402,15 @@ case class CookedEgg(style: EggStyle) extends Egg
 
 ## Case Study: Aggregate Root
 
-^ Now we have a way to identify a Cook.  Because they are uniquely identifiable using an Id, this makes the Cook an entity. More than that though, our Cook actually aggregates other parts of the domain, like frying pan or spatula. This makes the Cook an Aggregate Root.
+^ We can identify our cook.  This means Cook is an Entity.
 
-^ In the Food Preparation domain, the bulk of our domain operations will interact with the Cook Aggregate Root.
+^ Cook Aggregates other parts of the domain (eg. Frying Pan or Spatula)
 
-^ So how do you know which entities are going to be your Aggregate Roots?
+^ Cook is our Aggregate Root
+
+^ Bulk of operations will interact with the cook.
+
+^ How do we know it's an aggregate root?
 
 ![fit right](img/aggregate_root.png)
 
@@ -357,15 +418,23 @@ case class CookedEgg(style: EggStyle) extends Egg
 
 ## Aggregate Roots
 
-^ It's not always obvious which entities in our domain will be the Aggregate Roots.  In our Food Preparation Domain, the choice of Cook seems relatively straight forward, but it isn't always that easy.
+^ Qualities of Aggregate Root
 
-^ So how do we know which entities should be our aggregate roots?
+^ Aggregates other entities
 
-^ If an entity is going to be the focus of many of our domain operations, then that is a clue that it might be an aggregate root.
+^ Controls access to entities
 
-^ If you delete/destroy the entity and removing it results in the removal of other entities, then that is a clue that it might be an aggregate root.
+^ Other entities forbidden from accessing without going through the aggregate first.
 
-^ Take our Cook example.  If you remove the cook, does the frying pan get removed with them? You might argue that it doesn't.  The frying pan is not part of the cook, therefore it sticks around. That would seem to suggest that the Cook does not in fact aggregate the frying pan.  But let's look a bit deeper.  If you eliminate the Cook, then does the frying pan have meaning in the domain?  In the absence of a Cook, is the frying pan useful in any way?  Without a Cook, the frying pan is a useless hunk of metal.  So in that respect you can say that the frying pan is intrinsically tied to the presence of a Cook.  This means the Cook aggregates the frying pan.
+^ Not always obvious.  Cooks seems straight forward.
+
+^ If entity is focus of domain operations, may be aggregate root.
+
+^ If deleted or destroyed, deletes other entities, may be aggregate root.
+
+^ Cook example.  Delete Frying Pan?  Is it relevant without a cook?
+
+^ Cook aggregates frying pan.
 
 - Aggregates other entities.  The top most entity that aggregates other entities is the Aggregate Root.
 - Controls access to those entities.
@@ -375,17 +444,19 @@ case class CookedEgg(style: EggStyle) extends Egg
 
 ## Case Study: Broken Frying Pan
 
-^ Here we have another domain class.  This is a FryingPan. This implementation has problems though.
+^ Domain Class Frying Pan
 
-^ Frying pan takes an option.  This means checking all the time if the egg is present.
+^ Flawed.
 
-^ We are returning Try which means wrapping exceptions.
+^ Takes an option.  Constant checking if Egg is present.
 
-^ What cook tries to add another egg to an already full frying pan?
+^ Returning Try.  Wrap exceptions
 
-^ What cook tries to remove an egg from an empty frying pan?
+^ Cooks don't ever add eggs to full frying pans
 
-^ This model is awkward to use, awkward to test, and basically wrong.
+^ Cooks don't ever remove eggs from empty frying pans.
+
+^ Awkward to use, awkward to test, and wrong.
 
 ```scala
 case class FryingPan(cookingEgg: Option[PartiallyCookedEgg] = None) {
@@ -411,13 +482,17 @@ case class FryingPan(cookingEgg: Option[PartiallyCookedEgg] = None) {
 
 ## Case Study: Fixed Frying Pan
 
-^ Here we have an alternative implemenation of the Frying Pan.  This version is better. You can see it uses an algebraic data type.
+^ Alternative implementation.  Better.  Uses ADT.
 
-^ The cook won't try to remove an egg from an empty frying pan or add one to a full frying pan. They literally can't. The compiler won't allow it. We have compile time checking of our domain model which is fantastic.
+^ Compiler won't let us add an egg to a full frying pan or remove from an empty frying pan.
 
-^ We have encoded the rules about the domain inside methods that are part of the domain classes and also in the types themselves.
+^ Compile time checking of our domain model.  YAY.
 
-^ We have eliminated options, trys, and exceptions.  And in doing so we have dramatically simplified the tests that we need to write.
+^ Encoded rules of the domain inside methods that are part of the domain class, but also types.
+
+^ No more options, tries, or exceptions.
+
+^ Simpler to test.
 
 ```scala
 sealed trait FryingPan
@@ -434,13 +509,17 @@ case class FullFryingPan(egg: PartiallyCookedEgg) extends FryingPan {
 
 ## Evolving Truth
 
-^ Domain Driven Design is about evolving our understanding of the domain, and reflecting that evolution in the code.
+^ DDD is about evolving understanding of the domain.
 
-^ Often when building the domain model we find rough edges. We find areas where the code feels awkward.  This is usually a sign that we have the model wrong.  We need to look for these rough edges and try to draw out what is really happening.  We then evolve the model appropriately.
+^ Reflecting evolution in the code.
 
-^ Sometimes the domain itself changes.  A new law may cause us to have to do our work differently.  A new technology may change the way people work in the business.  When the domain changes the model needs to change with it.
+^ Rough edges signal the model might be wrong.
 
-^ Domain models aren't fixed. You don't create the domain model once and then forevermore use the same model. You need to be prepared to evolve the model.
+^ Find the rough edges and fix the model and the code.
+
+^ Domain may change.  New laws, new technologies.  Model must change with it.
+
+^ Domain models aren't fixed.  Need to be prepared to evolve the model.
 
 ![](img/evolution.jpg)
 
@@ -450,19 +529,29 @@ case class FullFryingPan(egg: PartiallyCookedEgg) extends FryingPan {
 
 # Infrastructure
 
-^ One way that Domain Driven Design and Onion Architecture help us evolve our model is by keeping the domain separate from the infrastructure.  By decoupling these things we can evolve the domain independently of the Infrastructure.
+^ DDD and Onion Architecture help evolve model by separating concerns.
 
-^ The Api layer ensures that the Domain and Infrastructure remain separate and distinct instead of bleeding into each other.
+^ Domain is separate from infrastructure.  They can evolve independently.
 
-^ Repositories and Factories act as insulators, keeping concerns about data storage from leaking into the domain.  We know we need to store data, but how and where we store it is an infrastructure concern, not part of the domain.
+^ API layer ensures Infrastructure and Domain remain separate and distinct.
+
+^ Repositories and Factories insulate us from concerns like data storage.
 
 ---
 
 ## Dependency Inversion Principle
 
-^ The Dependency Inversion Principle is a big part of Onion Architecture.  This is the idea that high level modules should not depend on low-level modules, instead they should depend on abstractions.  In this case when we talk about high level modules we are talking about the inner layers of the onion like the domain.  Low level modules are your outer layers, your infrastructure.
+^ Onion Architecture relies on the Dependency Inversion Principle.
 
-^ In order to implement the Dependency Inversion Principle we can use Dependency Injection.  Dependency Injection uses an "Injector" to supply the necessary dependencies to the code where they are needed.  The clients of the Injector are not allowed to reference the Injector.
+^ High level modules don't depend on low level modules.
+
+^ Depend on abstractions.
+
+^ In Onion Architecture, high level = inner layers.  Low level = outer layers.
+
+^ Dependency Injection can be used to implement the Dependency Inversion Principle.
+
+^ Injector supplies necessary dependencies where needed.
 
 > High-level modules should not depend on low-level modules. Both should depend on abstractions.
 
@@ -474,13 +563,19 @@ case class FullFryingPan(egg: PartiallyCookedEgg) extends FryingPan {
 
 ## Case Study: Cake and Eggs
 
-^ In the sample code I use a dependency injection pattern that was inspired by the Cake pattern, but is not what I would call vanilla cake.
+^ Sample code uses "thin cake pattern" (Adam Warski).  I developed this technique independently, inspired by Cake pattern, and later discovered his blog about it.
 
-^ The basic idea is to take a series of traits that can be defined and organized to follow Onion Architecture.  These traits define the pieces of the application that will be part of that layer in the Onion.
+^ Further adapted here for Onion Architecture.
 
-^ Where possible, the Module traits will provide concrete implementations of the various pieces.  If a concrete implementation is not available in the current layer, then it will be left abstract and will be defined in another layer of the Onion
+^ Series of traits, defined and organized according to Onion Architecture.
 
-^ In the sample code, the various layers are organized into packages.  The modules then exist inside the appropriate package.  They also follow the same Onion Architecture rules as the rest of the code.  Inner Modules are not allowed to depend on outer modules.
+^ Traits define pieces of the application that are part of that layer of the onion.  These are "modules".
+
+^ Models provide concrete implementations where possible, or left abstract to be defined later in another layer.
+
+^ Various layers organized into packages.  Modules exist in corresponding package.
+
+^ Modules follow same rules as Onion Architecture.  Inner modules not allowed to depend on outer modules.
 
 ```scala
 trait DomainModule {
@@ -499,7 +594,7 @@ trait InfrastructureModule { this: DomainModule with ApiModule =>
   override implicit def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
 }
 
-trait TestModule extends InfrastructureModule with ApiModule with DomainModule
+class Injector extends InfrastructureModule with ApiModule with DomainModule
 
 ```
 
@@ -507,11 +602,15 @@ trait TestModule extends InfrastructureModule with ApiModule with DomainModule
 
 ## Repositories and Factories
 
-^ Repositories and factories, while technically part of the domain, really are much more of an infrastructure element.
-  
-^ The idea behind them is that there is usually an element of infrastructure involved with creating or retrieving domain objects.  Usually we have to access a database or perform similar operations.  Rather than leaking these concerns into the domain, we wrap them in a repository or factory.  This keeps our domain pure.
+^ Repositories and Factories.  Part of the Domain.
 
-^ While they often abstract over top of a database, they don't have to.  Implementations could be talking to a database, or a file, or a REST Api, or even just in memory.
+^ Implementations are usually in Infrastructure.
+
+^ Usually an element of infrastructure (file system, database etc) involved with creating or retrieving objects.
+
+^ Don't leak these concerns into the domain.  Wrapped in Repo or Factory to keep domain pure.
+
+^ Often abstract over a database, but could be a file, or REST API or even in memory.
 
 - Abstract over data storage/creation concerns
 - Keeps the infrastructure from leaking into the domain
@@ -525,11 +624,15 @@ trait TestModule extends InfrastructureModule with ApiModule with DomainModule
 
 ## Case Study: A Carton of Eggs
 
-^ Here we can see a very simple trait for the Egg Repository.  Note that nothing about this indicates the nature of the repository.  The repository could be a carton of eggs, it could be a basket, or a fridge.
+^ Simple example of a trait for Egg Repository.
 
-^ The repository defines the operations that will be performed, but the implementation details about how it will be performed are part of the infrastructure.  In the sample code I have provided an In Memory implementation, but it could just as easily be accessing a database.
+^ Nothing to indicate the nature of the repo (Carton, Fridge, other).
 
-^ Because the Repository, and therefore the domain, are not tied to the specific implementation, we are free to change the implementation as necessary.  This could mean swapping to use a different database, or perhaps moving our database access behind a REST Api.  Or it could be as simple as changing the data layout in the database.
+^ Defines operations to perform, but not how they will be performed.
+
+^ I provide In Memory implementations, but could be replaced with DB access.
+
+^ Repository is not tied to implementation, so we can change as necessary.
 
 ```scala
 trait EggRepository {
@@ -544,16 +647,27 @@ trait EggRepository {
 
 ![fit left](img/steak_and_eggs.jpg)
 
+^ DDD is evolutionary.  Don't build it once and call it done.
 
-^ Domain Driven Design is an evolutionary process. We don't build a domain one and then call it done. We learn about the domain as we go and we have to continually update our understanding and our code to keep it from stagnating.
+^ Learn as we go.  Update our understanding.
 
-^ When done well, Domain Driven Design can help make your code more readable, maintainable, and portable.
+^ Done well code can be readable, maintainable, portable.
 
-^ In past projects, when working with DDD and Onion Architecture., it was common for my team to invisibly change database implementations, simply by swapping in a new repository. We would sometimes realize that our domain was flawed, and rewrite the entire thing, again without clients noticing, because the clients only ever spoke to the API.  Where we originally designed an application to be Event Driven, we might later decide we want a REST Api as well.  Adding that on was trivial because we were simply re-using an existing Api call.
+^ Past projects, common to invisibly change database implementations.
 
-^ The end goal of these techniques is to move us away from worrying about the specific details of the implementation, and to focus instead of how the software will be used.  And when we talk about how the software will be used, we don't mean the user interface. That is certainly important, but the user interface is just a presentation layer for the software.  We really want to focus on what is the real world problem that we are trying to solve. How is that real world problem actually dealt with in the absence of the software?
+^ Sometimes swapped entire domain logic without clients noticing because API didn't change.
 
-^ Domain Driven Design is about finding the people who can answer these types of questions, and then speaking to them in a language that they can understand.  It's about taking the understanding gained through this interaction and reflecting it in our code.
+^ Adding new ways to access Domain (REST vs Event Driven vs GUI) trivial due to re-use of API call.
+
+^ End goal to move us away from worrying about specific implementation details
+
+^ Focus instead on how software will be used.  Not the user interface, that's just presentation.
+
+^ What is the real problem we are trying to solve?  How is it solved when software isn't there?
+
+^ DDD is about finding the people who can answer these questions, and talking to them in language they understand.
+
+^ Taking understanding gained through this conversation and reflecting it in code.
 
 ---
 
