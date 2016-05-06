@@ -1,11 +1,23 @@
-# Domain Driven Design and Onion Architecture in Scala
-^ Hello, welcome to my presentation on Domain Driven Design and Onion Architecture in Scala.
+^ My name is Wade Waldron.  I am a Senior Consultant with Lightbend.
 
-^ My name is Wade Waldron.  I am a Senior Software Developer with BoldRadius
+^ Today I am going to be talking about Domain Driven Design and Onion Architecture in Scala
 
 ^ Started using DDD and Onion Architecture while working on real estate software.
 
 ^ The combination of these tools brought clarity to my code.
+
+
+![original](img/ScalaDaysNY16_slides/ScalaDaysNY16_slides.001.jpg)
+
+---
+
+^ Don't forget to rate the presentation.
+
+![original](img/ScalaDaysNY16_slides/ScalaDaysNY16_slides.002.jpg)
+
+---
+
+## Introduction
 
 ^ DDD is not CQRS or Event Sourcing.
 
@@ -13,8 +25,11 @@
 
 ^ Onion Architecture not required.
 
-### - Wade Waldron (@wdwaldron) -
-### - Senior Software Developer with BoldRadius -
+Domain Driven Design is often combined with:
+- CQRS
+- Event Sourcing
+- Onion Architecture
+- It is not required
 
 ---
 
@@ -119,6 +134,12 @@
 ## Case Study: Bounded Contexts
 
 ^ What are the bounded contexts in our case study?
+
+^ Food Prep
+
+^ Grocery Shopping
+
+^ Washing Dishes
 
 ^ Frying pan has no meaning while grocery shopping.
 
@@ -240,8 +261,8 @@
 ^ Time?  Doesn't capture the time to cook the egg.
 
 ```scala
-trait FoodPrepApi {
-  def fry(egg: Egg): FriedEgg
+class FoodPrepApi {
+  def fry(egg: Egg): FriedEgg = ???
 }
 ```
 ---
@@ -263,8 +284,8 @@ trait FoodPrepApi {
 ^ Unrecoverable: Out of eggs (have to return a failure.  Can not complete.)
 
 ```scala
-trait FoodPrepApi {
-  def prepareEgg(style: EggStyle): Future[CookedEgg]
+class FoodPrepApi {
+  def prepareEgg(style: EggStyle): Future[CookedEgg] = ???
 }
 ```
 
@@ -301,10 +322,10 @@ class FoodPrepApiTest extends FreeSpec with ScalaFutures {
   "prepareEgg" - {
     "should return a CookedEgg with the specified style" in new TestModule {
       val style = EggStyle.SunnySideUp
-      val expectedEgg = CookedEgg(style))
+      val expectedEgg = CookedEgg(style)
 
       whenReady(foodPrepApi.prepareEgg(style)) { egg =>
-        assert(egg == expectedEgg)
+        assert(egg === expectedEgg)
       }
     }
   }
@@ -387,8 +408,6 @@ case class CookedEgg(style: EggStyle) extends Egg
 
 ^ Example of a Tiny Type.
 
-^ Could be integer but this would be dangerous.
-
 ^ Accidentally mix up Ids or mix other types where we wanted Ids.
 
 ^ Prevents mistakes
@@ -396,7 +415,7 @@ case class CookedEgg(style: EggStyle) extends Egg
 ^ Enables us to later enrich the class and our domain.
 
 ```scala
-  case class CookId(value: Integer) extends AnyVal
+  case class CookId(value: String) extends AnyVal
 ```
 ---
 
@@ -547,15 +566,15 @@ case class FullFryingPan(egg: PartiallyCookedEgg) extends FryingPan {
 
 ^ Depend on abstractions.
 
-^ In Onion Architecture, high level = inner layers.  Low level = outer layers.
-
-^ Dependency Injection can be used to implement the Dependency Inversion Principle.
+^ Dependency Inversion Principle is often implemented with Dependency Injection
 
 ^ Injector supplies necessary dependencies where needed.
 
 > High-level modules should not depend on low-level modules. Both should depend on abstractions.
 
 - Onion Architecture relies on the Dependency Inversion Principle
+  - High Level Modules = Inner Layers
+  - Low Level Modules = Outer Layers
 - Domain often defines traits that are then implemented in Infrastructure
 - Dependency Injection can be used to implement inversion of control
 
@@ -674,3 +693,14 @@ trait EggRepository {
 # Questions
 
 GitHub Repo: https://github.com/WadeWaldron/scaladays2016
+
+Twitter: @wdwaldron
+LinkedIn: https://www.linkedin.com/in/wadewaldron
+
+---
+
+![original](img/ScalaDaysNY16_slides/ScalaDaysNY16_slides.003.jpg)
+
+---
+
+![original](img/ScalaDaysNY16_slides/ScalaDaysNY16_slides.004.jpg)
