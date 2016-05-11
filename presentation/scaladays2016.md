@@ -1,11 +1,16 @@
 ^ My name is Wade Waldron.  I am a Senior Consultant with Lightbend.
 
+^ Co-Author of Applied Akka Patterns.
+
 ^ Today I am going to be talking about Domain Driven Design and Onion Architecture in Scala
 
-^ Started using DDD and Onion Architecture while working on real estate software.
+^ I wanted to talk about DDD and Onion Architecture because the introduction of these tools brought many improvements to my code.
 
-^ The combination of these tools brought clarity to my code.
+^ Clarity
 
+^ Portability
+
+^ Accuracy
 
 ![original](img/ScalaDaysNY16_slides/ScalaDaysNY16_slides.001.jpg)
 
@@ -41,7 +46,7 @@ Domain Driven Design is often combined with:
 
 ^ Lots of good nuances and edge cases.
 
-^ Relateable
+^ Relatable
 
 ^ Easy to understand
 
@@ -107,9 +112,13 @@ Domain Driven Design is often combined with:
 
 ![left fit](img/chef.jpg)
 
-- Cook
-- Egg, Sunny Side Up, Scrambled
-- Stove, Frying Pan
+- Nouns
+  - Cook
+  - Egg, Sunny Side Up, Scrambled
+  - Stove, Frying Pan
+- Verbs
+  - Fry, Prepare
+  - Crack
 
 ---
 
@@ -174,7 +183,7 @@ Domain Driven Design is often combined with:
 
 ^ Examples of domain objects, pulled from ubiquitous language.
 
-![left fit](img/eggs.jpg)
+![right fit](img/eggs.jpg)
 
 - Cook, CookFactory, CookRepository
 - Egg, EggStyle
@@ -182,7 +191,13 @@ Domain Driven Design is often combined with:
 
 ---
 
-## What is Onion Architecture
+## Traditional Layered Architecture
+
+![left fit](img/layered_architecture.png)
+
+---
+
+## Onion Architecture
 
 ^ We know what DDD is, what is Onion Architecture?
 
@@ -291,22 +306,6 @@ class FoodPrepApi {
 
 ---
 
-## Consistent Api
-
-^ Consistent API hides domain
-
-^ Defines preferred way to interact with domain
-
-^ May start with a GUI
-
-^ Later add REST.  Still talks to same API.
-
-^ Later make it message driven.  Still uses same API.
-
-![inline](img/api_separation.png)
-
----
-
 ## Case Study: Functional Testing
 
 ^ Functional Tests around API
@@ -363,8 +362,10 @@ object EggStyle {
 
 sealed trait Egg
 
-case object RawEgg extends Egg
-case class CookedEgg(style: EggStyle) extends Egg
+object Egg {
+  case object RawEgg extends Egg
+  case class CookedEgg(style: EggStyle) extends Egg
+}
 ```
 ---
 
@@ -481,10 +482,10 @@ case class CookedEgg(style: EggStyle) extends Egg
 case class FryingPan(cookingEgg: Option[PartiallyCookedEgg] = None) {
   import FryingPan._
 
-  def add(egg: RawEgg, desiredStyle: EggStyle): Try[FryingPan] = {
+  def add(egg: RawEgg, style: EggStyle): Try[FryingPan] = {
     cookingEgg match {
       case Some(_) => Failure(FryingPanFullException)
-      case None => Success(this.copy(Some(egg.startCooking(desiredStyle))))
+      case None => Success(this.copy(Some(egg.startCooking(style))))
     }
   }
 
@@ -558,6 +559,50 @@ case class FullFryingPan(egg: PartiallyCookedEgg) extends FryingPan {
 
 ---
 
+## Repositories and Factories
+
+^ Repositories and Factories.  Part of the Domain.
+
+^ Implementations are usually in Infrastructure.
+
+^ Usually an element of infrastructure (file system, database etc) involved with creating or retrieving objects.
+
+^ Don't leak these concerns into the domain.  Wrapped in Repo or Factory to keep domain pure.
+
+^ Often abstract over a database, but could be a file, or REST API or even in memory.
+
+- Abstract over data storage/creation concerns
+- Keeps the infrastructure from leaking into the domain
+- Not limited to databases
+  - Database
+  - File
+  - REST Api
+  - In Memory
+  
+---
+
+## Case Study: A Carton of Eggs
+
+^ Simple example of a trait for Egg Repository.
+
+^ Nothing to indicate the nature of the repo (Carton, Fridge, other).
+
+^ Defines operations to perform, but not how they will be performed.
+
+^ I provide In Memory implementations, but could be replaced with DB access.
+
+^ Repository is not tied to implementation, so we can change as necessary.
+
+```scala
+trait EggRepository {
+  def findAndRemove(): Future[Option[RawEgg.type]]
+  def add(egg: RawEgg.type): Future[Unit]
+}
+```
+
+
+---
+
 ## Dependency Inversion Principle
 
 ^ Onion Architecture relies on the Dependency Inversion Principle.
@@ -570,13 +615,14 @@ case class FullFryingPan(egg: PartiallyCookedEgg) extends FryingPan {
 
 ^ Injector supplies necessary dependencies where needed.
 
-> High-level modules should not depend on low-level modules. Both should depend on abstractions.
+> High-level modules should not depend on low-level modules. 
+> Both should depend on abstractions.
 
 - Onion Architecture relies on the Dependency Inversion Principle
   - High Level Modules = Inner Layers
   - Low Level Modules = Outer Layers
-- Domain often defines traits that are then implemented in Infrastructure
-- Dependency Injection can be used to implement inversion of control
+- Domain often defines traits that are implemented in Infrastructure
+- Often implemented with Dependency Injection
 
 ---
 
@@ -619,49 +665,6 @@ class Injector extends InfrastructureModule with ApiModule with DomainModule
 
 ---
 
-## Repositories and Factories
-
-^ Repositories and Factories.  Part of the Domain.
-
-^ Implementations are usually in Infrastructure.
-
-^ Usually an element of infrastructure (file system, database etc) involved with creating or retrieving objects.
-
-^ Don't leak these concerns into the domain.  Wrapped in Repo or Factory to keep domain pure.
-
-^ Often abstract over a database, but could be a file, or REST API or even in memory.
-
-- Abstract over data storage/creation concerns
-- Keeps the infrastructure from leaking into the domain
-- Not limited to databases
-  - Database
-  - File
-  - REST Api
-  - In Memory
-  
----
-
-## Case Study: A Carton of Eggs
-
-^ Simple example of a trait for Egg Repository.
-
-^ Nothing to indicate the nature of the repo (Carton, Fridge, other).
-
-^ Defines operations to perform, but not how they will be performed.
-
-^ I provide In Memory implementations, but could be replaced with DB access.
-
-^ Repository is not tied to implementation, so we can change as necessary.
-
-```scala
-trait EggRepository {
-  def findAndRemove(): Future[Option[RawEgg.type]]
-  def add(egg: RawEgg.type): Future[Unit]
-}
-```
-
----
-
 ## Closing Remarks
 
 ![fit left](img/steak_and_eggs.jpg)
@@ -689,8 +692,6 @@ trait EggRepository {
 ^ Taking understanding gained through this conversation and reflecting it in code.
 
 ---
-
-# Questions
 
 GitHub Repo: https://github.com/WadeWaldron/scaladays2016
 
