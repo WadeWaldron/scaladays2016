@@ -1,3 +1,5 @@
+theme: Plain Jane
+
 ^ My name is Wade Waldron.  I am a Senior Consultant with Lightbend.
 
 ^ Co-Author of Applied Akka Patterns.
